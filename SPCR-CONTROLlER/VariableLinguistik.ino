@@ -1,7 +1,4 @@
 //=====================Tingkat Partikel Debu================================//
-int a = 50;
-int b = 100;
-int c = 150;
 
 float uSedikit(float debu){
   if (debu <=a ){sedikit =1;}
@@ -26,9 +23,6 @@ float uBanyak(float debu){
 }
 
 //=====================Tingkat Kotoran Panel================================//
-int x = 30;
-int y = 50;
-int z = 70;
 
 float uBersih(float panel){
   if (panel <=x ){bersih =1;}
@@ -36,12 +30,12 @@ float uBersih(float panel){
   else if (panel >=x && panel <=y){bersih=(y-panel)/x;}
   return bersih;
 }
-float uSedang(float panel){
-  if (panel == y ){sedang =1;}
-  else if (panel <= x || panel >= 70){sedang =0;}
-  else if (panel >=x && panel <=y){sedang=(panel-x)/x;}
-  else if (panel >=y && panel <=z){sedang=(z-panel)/x;}
-  return sedang;
+float uNormal(float panel){
+  if (panel == y ){normal =1;}
+  else if (panel <= x || panel >= z){normal =0;}
+  else if (panel >=x && panel <=y){normal=(panel-x)/x;}
+  else if (panel >=y && panel <=z){normal=(z-panel)/x;}
+  return normal;
 }
 float uKotor(float panel){
   if (panel >= z ){kotor =1;}

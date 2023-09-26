@@ -4,14 +4,14 @@ void fuzzifikasi(float debu){
   uBanyak(debu);
 }
  
-void rule(){
+void rules(){
   if(kondisiDebu == sedikit){
-    output = "bersih";
+    output = "Bersih";
   }
   else if (kondisiDebu == sedang){
-    output = "sedang";
+    output = "Normal";
   }
   else if (kondisiDebu == banyak){
-    output = "kotor";
+    output = "Kotor";
   }
 }

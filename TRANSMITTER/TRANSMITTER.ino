@@ -1,4 +1,11 @@
 #include "WaveshareSharpDustSensor.h"
+#include <SPI.h>
+#include <nRF24L01.h>
+#include <RF24.h>
+
+int pesan[1];
+RF24 radio(9,10);
+const uint64_t pipe = 0xE8E8F0F0E1LL;
 
 //INISIASI SENSOR
 const int iled = 4;
@@ -16,15 +23,6 @@ const int c = 150;
 float kondisiDebu;
 float sedikit, sedang, banyak;
 
-//============Tingkat Kotoran Panel=============//
-//Titik-titik kurva
-int x = 30;
-int y = 50;
-int z = 70;
-//Variabel fuzzy
-float kondisiPanel;
-float bersih, normal, kotor;
-
 String output;
 float arrayDebu[3];
 
@@ -33,15 +31,21 @@ void setup() {
   pinMode(iled, OUTPUT);
   digitalWrite(iled, LOW);
   Serial.begin(9600);
+
+  radio.begin(); 
+  radio.openWritingPipe(pipe);
 }
 
 void loop() {
   BacaSensor();
-  fuzzifikasi(debu);
-  defuzzifikasi();
-  rules();
-  TampilSerial();
+  FuzzyLogic();
   
-  delay(1000);
+  if (output.equals("Bersih")) {
+    pesan[0] = 0;
+  } else {
+    pesan[0] = 1;
+  }
 
+  radio.write(pesan, 1);
+  TampilSerial();
 }

@@ -2,7 +2,6 @@
 #include <nRF24L01.h>
 #include <RF24.h>
 RF24 radio(8, 10); // CE, CSN
-const byte addresses[][6] = {"00001", "00002"};
 
 int R_PWM1 = 3;
 int L_PWM1 = 5;
@@ -14,16 +13,15 @@ int L_PWM2 = 9;
 int R_ENA2 = 4; 
 int L_ENA2 = 7;
 
-int stat = 1; //1:sistem jalan, 2:sistem stop
+int stat = 0; //1:sistem jalan, 2:sistem stop
 
 #define limit A0
 #define pump  A1
 void setup() {
   Serial.begin(9600);
   radio.begin();
-  radio.openWritingPipe(addresses[0]); // 00201 -> Receiver
-  radio.openReadingPipe(1, addresses[1]); // 00202 -> Transmitter
-  radio.setPALevel(RF24_PA_MIN);
+  radio.openReadingPipe(1, 0xF0F0F0E1LL);
+  radio.setPALevel(RF24_PA_LOW);
 
   pinMode(R_PWM1,OUTPUT);
   pinMode(L_PWM1,OUTPUT);
@@ -44,21 +42,9 @@ void setup() {
   Serial.println("=======================================================================");
   Serial.println("\n\n\n");
   
-  digitalWrite(pump, LOW); //pump aktif
-  Serial.println("pump aktif");
-  delay(5000);
+  Serial.println("Menunggu Perintah.....");
   
-  Serial.println("\n\n\n");
-  Serial.println("=======================================================================");
-  Serial.println("                          PEMBERSIHAN DIMULAI                             ");
-  Serial.println("=======================================================================");
-  Serial.println("\n\n\n");
-  
-  putar(255);
-  Serial.println("kain aktif");
-  Serial.println("\n\n\n");
-
-  delay(5000);
+  delay(2000);
   
 }
 
@@ -113,28 +99,29 @@ void loop(){
       while (radio.available()){
         radio.read(&text, sizeof(text));
       }
-      if(text[0] == 'X'){
-        //Serial.println(text);  
-        if(stat == 1){
-          Serial.println("\n\n");
-          Serial.println(". -> STOP");
-          stat = 0;
-        }
-        else{
-          Serial.println("\n\n");
-          Serial.println(". -> START");
-          Serial.println("\n\n");
-          stat = 1;          
-        }
+      if(text == "ON"){
+        digitalWrite(pump, LOW); //pump aktif
+        Serial.println("pump aktif");
+        delay(5000);
+        
+        putar(255);
+        Serial.println("kain aktif");
+        delay(5000);
+        
+        maju(255);
+        Serial.println("Roda aktif");
+        delay(5000);
       }
-    }
-
-    if(stat == 1){
-      maju(255);
-      Serial.println("Roda aktif");
-    }
-    else{
-      stop_();
+      else{
+        Serial.println("\n\n\n");
+        stop_();
+        Serial.println("roda berhenti");
+        berhenti_putar();
+        Serial.println("kain berhenti");
+        digitalWrite(pump, HIGH);
+        Serial.println("pump berhenti");
+        Serial.println("\n\n\n");
+      }
     }
   }
 }
