@@ -48,4 +48,5 @@ void loop() {
 
   radio.write(pesan, 1);
   TampilSerial();
+  delay(1000);
 }
